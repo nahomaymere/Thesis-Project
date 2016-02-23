@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		11531F191C62272100CF6D27 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 11531F181C62272100CF6D27 /* main.c */; };
+		119AA61F1C6A463100861745 /* abelianSquareAvoidance.c in Sources */ = {isa = PBXBuildFile; fileRef = 119AA61D1C6A463100861745 /* abelianSquareAvoidance.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +26,8 @@
 /* Begin PBXFileReference section */
 		11531F151C62272100CF6D27 /* Thesis project */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "Thesis project"; sourceTree = BUILT_PRODUCTS_DIR; };
 		11531F181C62272100CF6D27 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
+		119AA61D1C6A463100861745 /* abelianSquareAvoidance.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = abelianSquareAvoidance.c; sourceTree = "<group>"; };
+		119AA61E1C6A463100861745 /* abelianSquareAvoidance.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = abelianSquareAvoidance.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +61,8 @@
 			isa = PBXGroup;
 			children = (
 				11531F181C62272100CF6D27 /* main.c */,
+				119AA61D1C6A463100861745 /* abelianSquareAvoidance.c */,
+				119AA61E1C6A463100861745 /* abelianSquareAvoidance.h */,
 			);
 			path = "Thesis project";
 			sourceTree = "<group>";
@@ -118,6 +123,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				119AA61F1C6A463100861745 /* abelianSquareAvoidance.c in Sources */,
 				11531F191C62272100CF6D27 /* main.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -235,6 +241,7 @@
 				11531F1E1C62272100CF6D27 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
