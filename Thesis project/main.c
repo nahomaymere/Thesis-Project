@@ -16,10 +16,9 @@ int main(){
     char word[wordSize + 1 ];
     
     read_baseWord("Enter the base word", word,wordSize);
-    //printf("\nthis is the extended string%s ",extend_base_word(word, wordSize));
-   /* if(is_abelian_square(word, wordSize))
-        printf("It has an abelian square");
-    else
-        printf("It has no abelian square");*/
+    is_abelian_square();
+    /*if (!is_abelian_square()) {
+        extendWord();
+    }*/
     return 0;
 }

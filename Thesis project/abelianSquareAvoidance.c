@@ -10,10 +10,13 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdbool.h>
 //nodes
 typedef struct node{
     char letter;
+    int key;
     struct node *nextptr;
+    struct node *prev;
 }word_node;
 typedef word_node *word_nodePtr;
 
@@ -22,23 +25,27 @@ typedef struct dynamicArray {
     char* word;
     int wordSize;
 }String;
-
+word_nodePtr head = NULL;
+word_nodePtr last = NULL;
 //prototypes
-void extendWord(word_nodePtr *headptr);
-void push(word_nodePtr *headptr,char data);
-void pop(word_nodePtr *headptr);
-void printWord(String *wordFromList, word_nodePtr *headptr);
+
+void printWord();
 void copyWordFromList(word_nodePtr *headptr, String *stringPtr);
 void freeString(String *myString);
+int isEmpty();
+void insertLastNode(char letter);
+void deleteLastNode();
+int deltaVector_isNull(int *vectorU, int *vectorV);
+
 
 void read_baseWord(char *prompt, char *base_word, int word_size){
     
     enum boo{ yes, no};
     enum boo allowlooping = yes;
     String wordFromList;
-    word_nodePtr startptr = NULL;
+
     
-    push(&startptr, ' ');
+    
 
     while (allowlooping == yes) {
         
@@ -56,15 +63,19 @@ void read_baseWord(char *prompt, char *base_word, int word_size){
         }
         
         for (int i = 0; base_word[i] != '\0';i++) {
-            push(&startptr, base_word[i]);
+            insertLastNode(base_word[i]);
         }
        
     }
     
     printf("This is your string: %s\n", base_word);
-    extendWord(&startptr);
-   
-    
+    printWord();
+    if(is_abelian_square())
+        printf("the word in the list has an abelian square not accepted for extending\n");
+    else{
+        printf("No abelian square detected this word can be extended\n");
+        
+    }
 }
 int getWordSize(char *prompt){
     
@@ -84,77 +95,91 @@ int getWordSize(char *prompt){
     return wordSize;
 }
 
-void extendWord(word_nodePtr *headptr){
+void extendWord(){
     
     char letter[] = "abc" ;
     int letterIndex = 0;
-    String aWord;
-    word_nodePtr tempPtr = *headptr;
-   /* while (tempPtr->nextptr!=NULL) {
-        //take the list content and put it in to string
-        copyWordFromList(&tempPtr, &aWord);
-        if (is_abelian_square(aWord.word, aWord.wordSize)){
-            *headptr = tempPtr;
-            pop(&tempPtr);
-            if (letterIndex < 2) {
-                letterIndex++;
-                copyWordFromList(headptr, &aWord);
-            }
-            else{
-                *headptr = tempPtr;
-                pop(&tempPtr);
-                letterIndex = 0;
-            // here it should pop one letter and then continue to search for the other possiblities
-            }
-        }
-        //if it has no abelian square
+    int parik_vectorU[3];
+    int parik_vectorV[3];
+    int counter = 0;
+    word_nodePtr tempPtr = last;
+    int prevKey = 0;
+    char prevLetter = ' ';
+    while (tempPtr->prev->prev != NULL ) {
+        prevLetter = last->letter;
+        prevKey = last->key;
+        insertLastNode(letter[letterIndex]); // here we extend the word immediatelly;
         
-        printWord(&aWord, headptr);
-        //add letter a to the word
-        *headptr = tempPtr;
-        push(&tempPtr, letter[letterIndex]);
-        tempPtr = tempPtr->nextptr;
-        
-    }*/
-    copyWordFromList(&tempPtr, &aWord);
-    while (tempPtr->nextptr!=NULL) {
-        if (is_abelian_square(aWord.word, aWord.wordSize)) {
-            *headptr = tempPtr;
-            pop(&tempPtr);
-            copyWordFromList(&tempPtr, &aWord);
-        }
-        printWord(&aWord, &tempPtr);
-        *headptr = tempPtr;
-        push(&tempPtr, letter[letterIndex]);
-        copyWordFromList(&tempPtr, &aWord);
-    }
-    
-    
-}
+        // if the word is the same
+        if (last->key == prevKey && last->letter == prevLetter) {
+            
+            letterIndex = convert_letterToParikValue(last->letter) + 1;
+            deleteLastNode();
 
- char * extend_base_word(char *baseWord, int size){
-     
-    char *alphabet = "abc";
-    word_nodePtr topPtr;
-    int indexofnewletters = 0;
-    char newletter;
-    baseWord = (char*)malloc(size *(sizeof(char)));
- 
-    while (is_abelian_square(baseWord,size) == 0) {
-        push(&topPtr,newletter);
-        if (indexofnewletters > 2 ) {
-            indexofnewletters = 0;
         }
+        if (last->key <= prevKey) {
+            printf("End of possibe abelian square free letters\n");
+            counter ++;
+ //           deleteLastNode();
+//            letterIndex++;
+
+        }
+
+        if (letterIndex > 2) {
+            letterIndex = 0;
+            deleteLastNode();
+        }
+        //it should delete the last letter if it creates an abelian square in the word but if the last letter has already been deleted it will not delete the same letter again it should backtrack to more than one word
+        // i need to know when
+        if (is_abelian_square()) {
+            letterIndex = convert_letterToParikValue(last->letter) + 1;
+           
+            for (int i = 0; i < counter; i++) {// here it should loop because the word contains an abelian square
+                deleteLastNode();
+                if (letterIndex > 2) {
+                    letterIndex = 0;
+                    deleteLastNode();
+                }
+            }
+            
+        }
+
+        if (prevKey <= last->key) {
+            printf("%d and %d\n",prevKey,last->key);
+            printWord();
+            counter = 0;
+        }
+        
+   
+        else{
+            letterIndex = 0;
+            
+        }
+        //if the word is not abelian square print it
+        //else replace the last node with the next available letter
+        //if all letters have been tried then delete the last node again and start over
+       /*
+        if (!is_abelian_square() && prevKey != last->key) {
+            //should not print the same abelian square free word over and over again
+            printWord();
+            //extend the word if it doesnt have abelian square
+            letterIndex = 0;
+            insertLastNode(letter[letterIndex]);
+            printf("%d and %d\n",last->key,prevKey);
+            prevKey = last->key;
+        }
+        else
+        {
+            deleteLastNode();
+            letterIndex++;
+            if (letterIndex > 2) {
+                letterIndex =  0;
+                deleteLastNode();
+            }
+            insertLastNode(letterIndex);
+        }*/
+        
     }
-    char myString[size];
-    for (int i = 0; i <  size; i++) {
-         myString[i] = *(baseWord + i); // copying data from one array to the second one
-    }
-    
-    free(baseWord);
-    baseWord = NULL;
-     
-    return myString;
 }
 
 int convert_letterToParikValue(char letter){
@@ -168,34 +193,51 @@ int convert_letterToParikValue(char letter){
     return -1;
 }
 
-int is_abelian_square(char *word,int word_size){
+bool is_abelian_square(){
     int parik_vectorU[3];
     int parik_vectorV[3];
-    for (int i = 0; i < 3; i++) {
-        parik_vectorU[i] = 0;
-        parik_vectorV[i] = 0;
-    }
+    int counter = 0;
+    word_nodePtr tempPtrV = last;
+    word_nodePtr tempPtrU = tempPtrV->prev->prev;
     
-    //loop
-    for (int i = 1; i <= word_size / 2 ; i++) {
-        
-        parik_vectorV[convert_letterToParikValue(word[word_size -i])]++;
-        for (int j = 2; j < i + 1; j++) {
-            parik_vectorU[convert_letterToParikValue(word[word_size - i - j])]++;
 
+    parik_vectorV[0] = parik_vectorV[1] = parik_vectorV [2] = 0;
+    parik_vectorU[0] = parik_vectorU [1] = parik_vectorU [2] = 0;
+    //loop
+   while (tempPtrU != NULL && last->key > 1) {
+       
+        parik_vectorV[convert_letterToParikValue(tempPtrV->letter)]++;
+        counter++;
+        if (counter > 1) {
+            tempPtrU = tempPtrV->prev;
+            //seting value back to 0 befor the new loop
+            parik_vectorU[0] = parik_vectorU [1] = parik_vectorU [2] = 0;
+            for (int j = 0; j < counter && tempPtrU!= NULL; j++) {
+                //increment an element of paric vectorU
+                parik_vectorU[convert_letterToParikValue(tempPtrU->letter)]++;
+                tempPtrU = tempPtrU->prev;
+                
+            }
+            
+           //ready for compare
+           if(deltaVector_isNull(parik_vectorU, parik_vectorV))
+               return true; // abelian square detected
+           
         }
-        //ready for compare
-        if(deltaVector_isNull(parik_vectorU, parik_vectorV))
-            return 1; // abelian square detected
+       
+       //Go to next node
+      // testing the values of the parik vectors
+        
+       printf("Vector U     \t  Vector V\n");
+       for (int i = 0; i < 3; i++){
+           printf("%d",parik_vectorU[i]);
+           printf("              \t %d",parik_vectorV[i]);
+           printf("\n");
+       }
+       tempPtrV = tempPtrV->prev;
     }
-   
-    for (int i = 0; i < 3; i++){
-        printf("%d",parik_vectorU[i]);
-        printf("              \t %d",parik_vectorV[i]);
-        printf("\n");
-    }
-    
-    return 0;
+
+    return false;
 }
 
 int deltaVector_isNull(int *vectorU, int *vectorV){
@@ -209,40 +251,15 @@ int deltaVector_isNull(int *vectorU, int *vectorV){
     return 1;
 }
 
-void push(word_nodePtr *headptr,char data){
-    //we create a new pointer to allocate a memory space for creating a new node
-    word_nodePtr newPtr = malloc(sizeof(word_node));
-    if (newPtr != NULL) {
-        //we put our data in
-        newPtr->letter = data;
-        //then we link the node down to the previous node
-        newPtr->nextptr = *headptr;
-        //now we put headptr to point to the new node
-        *headptr = newPtr;
-    }
-    else
-        printf("Error not enough memory available");
-}
-
-void pop(word_nodePtr *headptr){
-    //we create tempPtr because we don t want to delete headptr
-    word_nodePtr tempPtr;
-    //we make temPtr to point to the last node
-    tempPtr = *headptr;
-    *headptr = (*headptr)->nextptr;
-    free(tempPtr);
-}
-
-
-void printWord(String *wordFromList, word_nodePtr *headptr){
+void printWord(){
     
-    printf("This is your list content\n");
-    for (int i = wordFromList->wordSize - 1 ; i > -1 ; i--) {
-        printf("%c",wordFromList->word[i]);
+    word_nodePtr temPtr = head;
+    while (temPtr!= NULL) {
+        printf("%c",temPtr->letter);
+        temPtr = temPtr->nextptr;
     }
     printf("\n");
-    //once used the memory is freed
-    freeString(wordFromList);
+
 }
 void copyWordFromList(word_nodePtr *headptr, String *stringPtr){
     int counter = 0;
@@ -267,5 +284,45 @@ void freeString(String *myString){
         myString->wordSize = 0;
     }
     
+}
+int isEmpty(){
+    if (head == NULL) {
+        return 1;
+    }
+    return 0;
+}
+void insertLastNode(char letter){
+    word_nodePtr newPtr = malloc(sizeof(word_node));
+    if (newPtr!=NULL) {
+        
+        newPtr->letter = letter;
+        if (isEmpty()) {
+            head = newPtr;
+            newPtr->key = 0;
+            newPtr->prev = NULL;
+        }
+        else{
+            last->nextptr = newPtr;//connect the last node to the new node just created
+            newPtr->prev = last;//connect from the new node to the last node in the list
+            newPtr->key = newPtr->prev->key+ 1;
+        }
+        last = newPtr;
+        newPtr->nextptr = NULL;
+
+    }
+    else
+        printf("Memory is full");
+}
+void deleteLastNode(){
+    word_nodePtr tempPtr = last;
+    //if only one link
+    if(head->nextptr == NULL)
+        head = NULL;// delete the node
+    else{
+        //set
+        last->prev->nextptr = NULL;//cuting the connection from the current last node to the previous node
+    }
+    last = last->prev; //setting the previous element as the last element
+    free(tempPtr);//free space
 }
 
