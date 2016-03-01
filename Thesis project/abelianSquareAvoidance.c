@@ -27,6 +27,8 @@ typedef struct dynamicArray {
 }String;
 word_nodePtr head = NULL;
 word_nodePtr last = NULL;
+int the_word_size = 0;
+
 //prototypes
 
 void printWord();
@@ -38,19 +40,19 @@ void deleteLastNode();
 int deltaVector_isNull(int *vectorU, int *vectorV);
 
 
-void read_baseWord(char *prompt, char *base_word, int word_size){
+void read_baseWord(char *prompt){
     
     enum boo{ yes, no};
     enum boo allowlooping = yes;
     String wordFromList;
-
+    char base_word[the_word_size + 1];
     
     
 
     while (allowlooping == yes) {
         
         printf("%s\n",prompt);
-        fgets(base_word, word_size + 1, stdin);
+        fgets(base_word, the_word_size + 1, stdin);
         for (int i = 0; *(base_word + i) != '\0'; i++) {
             if(*(base_word + i) != 'a' && *(base_word + i) != 'b' && *(base_word + i) != 'c' && *(base_word +i)!= EOF && *(base_word + i) != '\n' ){
                 
@@ -77,7 +79,7 @@ void read_baseWord(char *prompt, char *base_word, int word_size){
         
     }
 }
-int getWordSize(char *prompt){
+void setWordSize(char *prompt){
     
     int wordSize = 0;
     char input[3];
@@ -92,7 +94,7 @@ int getWordSize(char *prompt){
         }
         
     }
-    return wordSize;
+    the_word_size = wordSize;
 }
 
 void extendWord(){
@@ -109,26 +111,22 @@ void extendWord(){
         prevLetter = last->letter;
         prevKey = last->key;
         insertLastNode(letter[letterIndex]); // here we extend the word immediatelly;
-        
+        /*
         // if the word is the same
         if (last->key == prevKey && last->letter == prevLetter) {
             
             letterIndex = convert_letterToParikValue(last->letter) + 1;
             deleteLastNode();
 
-        }
-        if (last->key <= prevKey) {
-            printf("End of possibe abelian square free letters\n");
-            counter ++;
- //           deleteLastNode();
-//            letterIndex++;
+        }*/
 
-        }
 
         if (letterIndex > 2) {
             letterIndex = 0;
             deleteLastNode();
         }
+        
+        
         //it should delete the last letter if it creates an abelian square in the word but if the last letter has already been deleted it will not delete the same letter again it should backtrack to more than one word
         // i need to know when
         if (is_abelian_square()) {
@@ -143,14 +141,21 @@ void extendWord(){
             }
             
         }
-
-        if (prevKey <= last->key) {
+        
+        // if the word is the same
+        if (last->key == prevKey && last->letter == prevLetter && last->key > the_word_size) {
+            
+            letterIndex = convert_letterToParikValue(last->letter) + 1;
+            deleteLastNode();
+            
+        }
+        else if (prevKey <= last->key ) {
             printf("%d and %d\n",prevKey,last->key);
             printWord();
             counter = 0;
+            
+
         }
-        
-   
         else{
             letterIndex = 0;
             
@@ -228,20 +233,21 @@ bool is_abelian_square(){
        //Go to next node
       // testing the values of the parik vectors
         
-       printf("Vector U     \t  Vector V\n");
+      /* printf("Vector U     \t  Vector V\n");
        for (int i = 0; i < 3; i++){
            printf("%d",parik_vectorU[i]);
            printf("              \t %d",parik_vectorV[i]);
            printf("\n");
-       }
-       tempPtrV = tempPtrV->prev;
+       }*/
     }
 
     return false;
 }
 
 int deltaVector_isNull(int *vectorU, int *vectorV){
+    
     int delta_vector[3];
+    
     for (int i = 0; i < 3; i ++) {
          delta_vector[i]= vectorU[i] - vectorV[i];
         if (delta_vector[i]!= 0) {

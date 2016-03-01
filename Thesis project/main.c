@@ -12,11 +12,10 @@
 
 int main(){
     
-    int wordSize = getWordSize("Enter the number of letters of your base word");
-    char word[wordSize + 1 ];
-    
-    read_baseWord("Enter the base word", word,wordSize);
+    setWordSize("Enter the number of letters of your base word");
+    read_baseWord("Enter the base word");
     is_abelian_square();
+    extendWord();
     /*if (!is_abelian_square()) {
         extendWord();
     }*/
