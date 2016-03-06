@@ -38,6 +38,7 @@ int isEmpty();
 void insertLastNode(char letter);
 void deleteLastNode();
 int deltaVector_isNull(int *vectorU, int *vectorV);
+void backtrack();
 
 
 void read_baseWord(char *prompt){
@@ -89,7 +90,7 @@ void setWordSize(char *prompt){
         fgets(input, 3, stdin);
         wordSize = atoi(input);
         while ((inp = getchar()) != '\n' && inp != EOF );
-        if (wordSize > 0 && wordSize < 10) {
+        if (wordSize > 0 && wordSize < 100) {
             break;
         }
         
@@ -110,79 +111,42 @@ void extendWord(){
     while (tempPtr->prev->prev != NULL ) {
         prevLetter = last->letter;
         prevKey = last->key;
-        insertLastNode(letter[letterIndex]); // here we extend the word immediatelly;
-        /*
-        // if the word is the same
-        if (last->key == prevKey && last->letter == prevLetter) {
-            
-            letterIndex = convert_letterToParikValue(last->letter) + 1;
-            deleteLastNode();
-
-        }*/
+        insertLastNode('a');
+        //printWord();
 
 
-        if (letterIndex > 2) {
-            letterIndex = 0;
-            deleteLastNode();
-        }
-        
-        
         //it should delete the last letter if it creates an abelian square in the word but if the last letter has already been deleted it will not delete the same letter again it should backtrack to more than one word
         // i need to know when
+        if (last->key == prevKey && last->letter == prevLetter) {
+        }
         if (is_abelian_square()) {
-            letterIndex = convert_letterToParikValue(last->letter) + 1;
-           
-            for (int i = 0; i < counter; i++) {// here it should loop because the word contains an abelian square
-                deleteLastNode();
-                if (letterIndex > 2) {
-                    letterIndex = 0;
-                    deleteLastNode();
-                }
-            }
-            
+            backtrack();
+           // printWord();
         }
-        
-        // if the word is the same
-        if (last->key == prevKey && last->letter == prevLetter && last->key > the_word_size) {
-            
-            letterIndex = convert_letterToParikValue(last->letter) + 1;
+        if (prevLetter == last->letter && prevKey == last->key && last->key >the_word_size){
             deleteLastNode();
-            
+            /*printf("If the word is the same ");
+            printWord();*/
+            switch (last->letter) {
+                case 'a':
+                    insertLastNode('b');
+                    break;
+                    
+                case 'b':
+                    insertLastNode('c');
+                    break;
+                case 'c':
+                    deleteLastNode();
+                    break;
+            }
+            /*printf("changing word ");
+            printWord();*/
         }
-        else if (prevKey <= last->key ) {
+        if (prevKey <= last->key ) {
             printf("%d and %d\n",prevKey,last->key);
             printWord();
             counter = 0;
-            
-
         }
-        else{
-            letterIndex = 0;
-            
-        }
-        //if the word is not abelian square print it
-        //else replace the last node with the next available letter
-        //if all letters have been tried then delete the last node again and start over
-       /*
-        if (!is_abelian_square() && prevKey != last->key) {
-            //should not print the same abelian square free word over and over again
-            printWord();
-            //extend the word if it doesnt have abelian square
-            letterIndex = 0;
-            insertLastNode(letter[letterIndex]);
-            printf("%d and %d\n",last->key,prevKey);
-            prevKey = last->key;
-        }
-        else
-        {
-            deleteLastNode();
-            letterIndex++;
-            if (letterIndex > 2) {
-                letterIndex =  0;
-                deleteLastNode();
-            }
-            insertLastNode(letterIndex);
-        }*/
         
     }
 }
@@ -233,13 +197,15 @@ bool is_abelian_square(){
        //Go to next node
       // testing the values of the parik vectors
         
-      /* printf("Vector U     \t  Vector V\n");
+     /*  printf("Vector U     \t  Vector V\n");
        for (int i = 0; i < 3; i++){
            printf("%d",parik_vectorU[i]);
            printf("              \t %d",parik_vectorV[i]);
            printf("\n");
        }*/
+       tempPtrV = tempPtrV->prev;
     }
+    
 
     return false;
 }
@@ -331,4 +297,24 @@ void deleteLastNode(){
     last = last->prev; //setting the previous element as the last element
     free(tempPtr);//free space
 }
-
+void backtrack(){
+    while(last->key > the_word_size && is_abelian_square()) {
+        printf("In backtrack ");
+        printWord();
+        switch (last->letter) {
+            case 'a':
+                deleteLastNode();
+                insertLastNode('b');
+                break;
+                
+            case 'b':
+                deleteLastNode();
+                insertLastNode('c');
+                break;
+            case 'c':
+                deleteLastNode();
+                break;
+        }
+        
+    }
+}
