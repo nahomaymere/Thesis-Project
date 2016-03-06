@@ -30,7 +30,6 @@ word_nodePtr last = NULL;
 int the_word_size = 0;
 
 //prototypes
-
 void printWord();
 void copyWordFromList(word_nodePtr *headptr, String *stringPtr);
 void freeString(String *myString);
@@ -40,7 +39,6 @@ void deleteLastNode();
 int deltaVector_isNull(int *vectorU, int *vectorV);
 void backtrack();
 
-
 void read_baseWord(char *prompt){
     
     enum boo{ yes, no};
@@ -48,8 +46,6 @@ void read_baseWord(char *prompt){
     String wordFromList;
     char base_word[the_word_size + 1];
     
-    
-
     while (allowlooping == yes) {
         
         printf("%s\n",prompt);
@@ -113,7 +109,6 @@ void extendWord(){
         prevKey = last->key;
         insertLastNode('a');
         //printWord();
-
 
         //it should delete the last letter if it creates an abelian square in the word but if the last letter has already been deleted it will not delete the same letter again it should backtrack to more than one word
         // i need to know when
@@ -185,14 +180,12 @@ bool is_abelian_square(){
                 //increment an element of paric vectorU
                 parik_vectorU[convert_letterToParikValue(tempPtrU->letter)]++;
                 tempPtrU = tempPtrU->prev;
-                
             }
             
            //ready for compare
            if(deltaVector_isNull(parik_vectorU, parik_vectorV))
                return true; // abelian square detected
-           
-        }
+           }
        
        //Go to next node
       // testing the values of the parik vectors
@@ -206,7 +199,6 @@ bool is_abelian_square(){
        tempPtrV = tempPtrV->prev;
     }
     
-
     return false;
 }
 
@@ -220,6 +212,7 @@ int deltaVector_isNull(int *vectorU, int *vectorV){
             return 0; //vector is not null
         }
     }
+    
     return 1;
 }
 
@@ -239,7 +232,6 @@ void copyWordFromList(word_nodePtr *headptr, String *stringPtr){
     word_nodePtr temptr = *headptr;
     
     do{
-        
         stringPtr->word = (char*)realloc(stringPtr->word, sizeof(char) * (counter + 1));
         stringPtr->word[counter] = temptr->letter;
         temptr = temptr->nextptr;
