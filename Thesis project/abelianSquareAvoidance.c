@@ -52,7 +52,8 @@ void read_baseWord(char *prompt){
         fgets(base_word, the_word_size + 1, stdin);
         for (int i = 0; *(base_word + i) != '\0'; i++) {
             
-            if(*(base_word + i) != 'a' && *(base_word + i) != 'b' && *(base_word + i) != 'c' && *(base_word +i)!= EOF && *(base_word + i) != '\n' ){
+            if(*(base_word + i) != 'a' && *(base_word + i) != 'b' &&
+               *(base_word + i) != 'c' && *(base_word +i)!= EOF && *(base_word + i) != '\n' ){
                 
                 allowlooping = yes;
                 break;
