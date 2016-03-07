@@ -47,27 +47,27 @@ void read_baseWord(char *prompt){
     char base_word[the_word_size + 1];
     
     while (allowlooping == yes) {
-        
+        char inp;
         printf("%s\n",prompt);
         fgets(base_word, the_word_size + 1, stdin);
         for (int i = 0; *(base_word + i) != '\0'; i++) {
+            
             if(*(base_word + i) != 'a' && *(base_word + i) != 'b' && *(base_word + i) != 'c' && *(base_word +i)!= EOF && *(base_word + i) != '\n' ){
                 
                 allowlooping = yes;
-                printf("because of %c is not\n", *(base_word + i));
                 break;
             }
             else
                 allowlooping = no;
         }
-        
-        for (int i = 0; base_word[i] != '\0';i++) {
-            insertLastNode(base_word[i]);
-        }
-       
+        //cleaning the input
+        while ((inp = getchar()) != '\n' && inp != EOF);
     }
     
-    printf("This is your string: %s\n", base_word);
+    for (int i = 0; base_word[i] != '\0';i++) {
+        insertLastNode(base_word[i]);
+    }
+    printf("This is your string: ");
     printWord();
     if(is_abelian_square())
         printf("the word in the list has an abelian square not accepted for extending\n");
@@ -143,6 +143,7 @@ void extendWord(){
             counter = 0;
         }
         
+
     }
 }
 
