@@ -70,12 +70,7 @@ void read_baseWord(char *prompt){
     }
     printf("This is your string: ");
     printWord();
-    if(is_abelian_square())
-        printf("the word in the list has an abelian square not accepted for extending\n");
-    else{
-        printf("No abelian square detected this word can be extended\n");
-        
-    }
+
 }
 void setWordSize(char *prompt){
     
@@ -113,30 +108,33 @@ void extendWord(){
 
         //it should delete the last letter if it creates an abelian square in the word but if the last letter has already been deleted it will not delete the same letter again it should backtrack to more than one word
         // i need to know when
-        if (last->key == prevKey && last->letter == prevLetter) {
-        }
+
         if (is_abelian_square()) {
             backtrack();
            // printWord();
         }
         if (prevLetter == last->letter && prevKey == last->key && last->key >the_word_size){
-            deleteLastNode();
-            /*printf("If the word is the same ");
-            printWord();*/
+            printf("If the word is the same ");
+            printWord();
+            while (last->letter == 'c') {
+                deleteLastNode();
+            }
             switch (last->letter) {
                 case 'a':
+                    deleteLastNode();
                     insertLastNode('b');
                     break;
                     
                 case 'b':
+                    deleteLastNode();
                     insertLastNode('c');
                     break;
-                case 'c':
-                    deleteLastNode();
-                    break;
+
             }
-            /*printf("changing word ");
-            printWord();*/
+
+            printf("changing word ");
+            printWord();
+
         }
         if (prevKey <= last->key ) {
             printf("%d and %d\n",prevKey,last->key);
@@ -295,6 +293,10 @@ void backtrack(){
     while(last->key > the_word_size && is_abelian_square()) {
         printf("In backtrack ");
         printWord();
+        while (last->letter == 'c') {
+            deleteLastNode();
+        }
+
         switch (last->letter) {
             case 'a':
                 deleteLastNode();
@@ -305,9 +307,7 @@ void backtrack(){
                 deleteLastNode();
                 insertLastNode('c');
                 break;
-            case 'c':
-                deleteLastNode();
-                break;
+            
         }
         
     }

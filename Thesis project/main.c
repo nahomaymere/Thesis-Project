@@ -14,10 +14,12 @@ int main(){
     
     setWordSize("Enter the number of letters of your base word");
     read_baseWord("Enter the base word");
-    is_abelian_square();
-    extendWord();
-    /*if (!is_abelian_square()) {
+    
+    if(is_abelian_square())
+        printf("the word in the list has an abelian square it is not accepted for extending\n");
+    else{
+        printf("No abelian square detected this word can be extended\n");
         extendWord();
-    }*/
+    }
     return 0;
 }
