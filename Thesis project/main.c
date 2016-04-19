@@ -11,7 +11,7 @@
 #include <stdio.h>
 
 int main(){
-    
+
     setWordSize("Enter the number of letters of your base word");
     read_baseWord("Enter the base word");
     

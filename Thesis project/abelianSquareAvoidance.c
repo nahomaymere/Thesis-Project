@@ -28,9 +28,11 @@ typedef struct dynamicArray {
 word_nodePtr head = NULL;
 word_nodePtr last = NULL;
 int the_word_size = 0;
+bool isopeningFileFirstTime = true;
 
 //prototypes
 void printWord();
+void printTextToFile(char* text);
 void copyWordFromList(word_nodePtr *headptr, String *stringPtr);
 void freeString(String *myString);
 int isEmpty();
@@ -43,7 +45,6 @@ void read_baseWord(char *prompt){
     
     enum boo{ yes, no};
     enum boo allowlooping = yes;
-    String wordFromList;
     char base_word[the_word_size + 1];
     
     while (allowlooping == yes) {
@@ -92,10 +93,7 @@ void setWordSize(char *prompt){
 
 void extendWord(){
     
-    char letter[] = "abc" ;
-    int letterIndex = 0;
-    int parik_vectorU[3];
-    int parik_vectorV[3];
+   
     int counter = 0;
     word_nodePtr tempPtr = last;
     int prevKey = 0;
@@ -104,18 +102,17 @@ void extendWord(){
         prevLetter = last->letter;
         prevKey = last->key;
         insertLastNode('a');
-        //printWord();
 
         //it should delete the last letter if it creates an abelian square in the word but if the last letter has already been deleted it will not delete the same letter again it should backtrack to more than one word
         // i need to know when
 
         if (is_abelian_square()) {
             backtrack();
-           // printWord();
         }
         if (prevLetter == last->letter && prevKey == last->key && last->key >the_word_size){
             printf("If the word is the same ");
             printWord();
+            printTextToFile(" [Repeated word]");
             while (last->letter == 'c') {
                 deleteLastNode();
             }
@@ -132,13 +129,15 @@ void extendWord(){
 
             }
 
-            printf("changing word ");
+            //printf("changing word ");
             printWord();
+            printTextToFile(" [Changing word] ");
 
         }
         if (prevKey <= last->key ) {
             printf("%d and %d\n",prevKey,last->key);
             printWord();
+            printTextToFile("[AA2free]");
             counter = 0;
         }
         
@@ -217,14 +216,43 @@ int deltaVector_isNull(int *vectorU, int *vectorV){
 }
 
 void printWord(){
-    
+    FILE *fptr;
     word_nodePtr temPtr = head;
+    int counter = 0;
+    
+    if (isopeningFileFirstTime) {
+        fptr = fopen("/Users/nahomhailu/Documents/developer/Thesis project/Thesis project/AA2freewords.txt", "w");
+        isopeningFileFirstTime = false;
+    }
+    else{
+        fptr = fopen("/Users/nahomhailu/Documents/developer/Thesis project/Thesis project/AA2freewords.txt", "a");
+        fprintf(fptr, "\n");
+    }
+
     while (temPtr!= NULL) {
-        printf("%c",temPtr->letter);
+       
+        if (fptr == NULL) {
+            printf("FIle is full");
+        }
+        else
+        {
+            fprintf(fptr,"%c",temPtr->letter);
+            counter++;
+        }
+        
         temPtr = temPtr->nextptr;
     }
-    printf("\n");
+    fprintf(fptr, "        [%d letters]",counter);
+    fclose(fptr);
+    
 
+}
+void printTextToFile(char* text){
+    FILE *fptr;
+    fptr = fopen("/Users/nahomhailu/Documents/developer/Thesis project/Thesis project/AA2freewords.txt", "a");
+    fprintf(fptr, "%s ",text);
+    fprintf(fptr, "\n");
+    fclose(fptr);
 }
 void copyWordFromList(word_nodePtr *headptr, String *stringPtr){
     int counter = 0;
@@ -291,8 +319,10 @@ void deleteLastNode(){
 }
 void backtrack(){
     while(last->key > the_word_size && is_abelian_square()) {
-        printf("In backtrack ");
+        //printf("In backtrack ");
         printWord();
+        printTextToFile(" [In backtrack] ");
+
         while (last->letter == 'c') {
             deleteLastNode();
         }
