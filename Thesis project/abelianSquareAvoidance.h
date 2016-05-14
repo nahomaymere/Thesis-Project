@@ -12,8 +12,10 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-void read_baseWord(char *prompt);
 void setWordSize(char *prompt);
+void read_baseWord(char *prompt);
+void read_vectorsToAvoid(char* prompt);
+void set_Number_of_vectors();
 char * extend_base_word(char *baseWord, int size);
 int convert_letterToParikValue(char letter);
 bool is_abelian_square();

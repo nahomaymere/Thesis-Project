@@ -221,11 +221,11 @@ void printWord(){
     int counter = 0;
     
     if (isopeningFileFirstTime) {
-        fptr = fopen("/Users/nahomhailu/Documents/developer/Thesis project/Thesis project/AA2freewords.txt", "w");
+        fptr = fopen("./AA2freewords.txt", "w");//Change this directory to your own folder
         isopeningFileFirstTime = false;
     }
     else{
-        fptr = fopen("/Users/nahomhailu/Documents/developer/Thesis project/Thesis project/AA2freewords.txt", "a");
+        fptr = fopen("./AA2freewords.txt", "a");//Change this directory to your own folder
         fprintf(fptr, "\n");
     }
 
@@ -249,7 +249,7 @@ void printWord(){
 }
 void printTextToFile(char* text){
     FILE *fptr;
-    fptr = fopen("/Users/nahomhailu/Documents/developer/Thesis project/Thesis project/AA2freewords.txt", "a");
+    fptr = fopen("./AA2freewords.txt", "a");
     fprintf(fptr, "%s ",text);
     fprintf(fptr, "\n");
     fclose(fptr);
